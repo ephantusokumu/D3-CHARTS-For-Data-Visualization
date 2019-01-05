@@ -1,0 +1,67 @@
+
+  [
+    {
+        "key": "ING_SW_CB",
+        "value": "5"
+    },
+    {
+        "key": "SB_SW_CB",
+        "value": "5"
+    },
+    {
+        "key": "NG3_SW_CB",
+        "value": "5"
+    },
+    {
+        "key": "Mould_Close",
+        "value": "5"
+    },
+    {
+        "key": "Leak_Test",
+        "value": "5"
+    },
+    {
+        "key": "ML_Load",
+        "value": "5"
+    },
+    {
+        "key": "Pre_Heat",
+        "value": "5"
+    },
+    {
+        "key": "Dispense",
+        "value": "5"
+    },
+    {
+        "key": "A310",
+        "value": "5"
+    },
+    {
+        "key": "Gelation",
+        "value": "5"
+    },
+    {
+        "key": "Platen",
+        "value": "5"
+    },
+    {
+        "key": "Mainline_Unload",
+        "value": "5"
+    },
+    {
+        "key": "De_mould",
+        "value": "5"
+    },
+    {
+        "key": "Clean_Up",
+        "value": "5"
+    },
+    {
+        "key": "Soda_Blast",
+        "value": "5"
+    },
+    {
+        "key": "Miscellaneous",
+        "value": "5"
+    }
+  ]

@@ -1,0 +1,47 @@
+[
+  {
+    "process": "process1",
+    "role": "role1",
+    "hours": 120
+  },
+  {
+    "process": "process2",
+    "role": "role1",
+    "hours": 50
+  },
+  {
+    "process": "process2",
+    "role": "role2",
+    "hours": 85
+  },
+  {
+    "process": "process3",
+    "role": "role2",
+    "hours": 0
+  },
+  {
+    "process": "process3",
+    "role": "role3",
+    "hours": 180
+  },
+  {
+    "process": "process3",
+    "role": "role4",
+    "hours": 45
+  },
+  {
+    "process": "process3",
+    "role": "role5",
+    "hours": 40
+  },
+  {
+    "process": "process4",
+    "role": "role2",
+    "hours": 2
+  },
+  {
+    "process": "process4",
+    "role": "role4",
+    "hours": 95
+  }
+]

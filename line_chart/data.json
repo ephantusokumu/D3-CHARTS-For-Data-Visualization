@@ -1,0 +1,26 @@
+[
+  {
+     "date": "1-jan-12",
+     "close": "5",
+ }, {
+     "date": "1-Feb-12",
+     "close": "100",
+ }, {
+     "date": "1-mar-12",
+     "close": "150"
+ }, {
+     "date": "1-apr-12",
+     "close": "90",
+ }, {
+     "date": "1-May-12",
+     "close": "34",
+ }, {
+     "date": "1-jun-12",
+     "close": 67
+ }, {
+     "date": "1-jul-12",
+     "close": 67
+ }, {
+     "date": "1-Aug-12",
+     "close": 79
+ }]

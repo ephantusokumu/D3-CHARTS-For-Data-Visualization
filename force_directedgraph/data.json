@@ -1,0 +1,56 @@
+{  
+  "nodes":[
+    {"name":"Register", "frequency": 1103},
+    {"name":"Analyze Defect", "frequency": 2206},
+    {"name":"Repair (Complex)", "frequency": 1447},
+    {"name":"Test Repair", "frequency": 3012},
+    {"name":"Inform User", "frequency": 1101},
+    {"name":"Archive Repair", "frequency": 999},
+    {"name":"Repair (Simple)", "frequency": 1568},
+    {"name":"Restart Repair", "frequency": 405}
+  ],
+  "arcs":[
+        {
+            "source": "Register",
+            "target": "Analyze Defect",
+            "frequency": 2206,
+            "dependency": 0
+        },
+        {
+            "source": "Register",
+            "target": "Repair (Complex)",
+            "frequency": 1447,
+            "dependency": 0
+        },
+        {
+            "source": "Register",
+            "target": "Test Repair",
+            "frequency": 3012,
+            "dependency": 0
+        },
+        {
+            "source": "Register",
+            "target": "Inform User",
+            "frequency": 1101,
+            "dependency": 0
+        },
+        {
+            "source": "Register",
+            "target": "Archive Repair",
+            "frequency": 999,
+            "dependency": 0
+        },
+        {
+            "source": "Register",
+            "target": "Repair (Simple)",
+            "frequency": 1568,
+            "dependency": 0
+        },
+        {
+            "source": "Register",
+            "target": "Restart Repair",
+            "frequency": 405,
+            "dependency": 0
+        }
+  ]
+}

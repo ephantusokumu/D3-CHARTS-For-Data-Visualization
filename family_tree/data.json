@@ -1,0 +1,48 @@
+{
+  "name": "Kenya one",
+  "born": 1862,
+  "died": 1906,
+  "location": "Nairobi area",
+  "parents": [
+    {
+      "name": "Kenya two",
+      "born": 1831,
+      "died": 1884,
+      "location": "Kisumu",
+      "parents": [
+        {
+          "name": "Kenya Three",
+          "born": 1781,
+          "died": 1871,
+          "location": "Eldoret"
+        },
+        {
+          "name": "Kenya four",
+          "born": 1795,
+          "died": 1871,
+          "location": "Kilimani"
+        }
+      ]
+    },
+    {
+      "name": "Kenya five",
+      "born": 1826,
+      "died": 1866,
+      "location": "Baraton",
+      "parents": [
+        {
+          "name": "Kenya six",
+          "born": 1792,
+          "died": 1845,
+          "location": "Naivasha"
+        },
+        {
+          "name": "Kenya seven",
+          "born": 1793,
+          "died": 1882,
+          "location": "Montreal-Kenya"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+
+<html>
+<head>
+    <meta charset ="utf-8">
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="">
+
+</head>
+
+<body>
+
+<div id="chart"></div>
+
+    <script>
+
+let margin = {top: 35, right: 145, bottom: 35, left: 45},
+    width = 960 - margin.left - margin.right,
+    height = 560 - margin.top - margin.bottom;
+
+// scale to ordinal because x axis is not numerical
+var x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
+
+//scale to numerical value by height
+var y = d3.scaleLinear().range([height, 0]);
+
+var chart = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+var xAxis = d3.axisBottom(x); //orient bottom because x-axis will appear below the bars
+
+var yAxis = d3.axisLeft(y);
+//load data from json file
+d3.json("data.json", function (error, data1) {
+//plot rows and cols json
+    var data = data1[0].data;
+    var cols = data1[0].cols;
+    var rows = data1[0].rows;
+
+x.domain(rows.map(function (d) { return d[1]; })); //Label - data1[0]
+
+y.domain([0, d3.max(rows, function(d){ return d[0]; })]);
+
+padding = 100;
+// create an svg container
+var vis = d3.select("body").
+    append("svg:svg")
+        .attr("width", width)
+        .attr("height", height);
+        // now add titles to the axes
+         vis.append("text")
+             .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+             .attr("dy", ".35em")
+             .attr("dx", "-1em")
+             .attr("transform", "translate("+ (padding/2) +","+(height/2)+")rotate(-90)") 
+             .text(data1[0].cols[0].label);
+         vis.append("text")
+             .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+             .attr("transform", "translate("+ (width/2) +","+(height-(padding/3))+")")  // centre below axis
+             .text(data1[0].cols[1].label);
+    var bar = chart.selectAll("g")
+        .data(data)
+        .enter();
+
+    bar.append("rect")
+        .attr("y", function (d) {
+            return y(d.value);
+        })
+        .attr("x", function (d, i) {
+            return x(d.time);
+        })
+        .attr("height", function (d) {
+            return height - y(d.value);
+        })
+        .attr("width", x.bandwidth()); //set width base on range on ordinal data
+
+    bar.append("text")
+        .attr("y", function (d) {
+            return y(d.value) - 15;
+        })
+        .attr("x", function (d, i) {
+            return x(d.time);
+        })
+        .attr("dy", ".75em")
+        .text(function (d) {
+            return d.value;
+        });
+    chart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    chart.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("responses");
+});
+
+    </script>
+
+</body>
+</html>

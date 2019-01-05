@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="/js/plugins/d3pie/d3pie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
+    <title>TOP PIRATORS WORLDWIDE</title>
+    <!-- styling using css -->
+    <style>
+      body {
+        margin: auto;
+        width: 50%;
+        border: solid grey;
+      }
+      .domain {
+        display: none;
+      }
+      .legendCells text {
+        fill: blue;
+        font-size: 15pt;
+        font-family: verdana;
+      }
+      .legend-label {
+        fill: red;
+        font-size: 40pt;
+        font-family: sans-serif;
+      }
+      .toolTip {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        position: absolute;
+        display: none;
+        width: auto;
+        height: auto;
+        background: none repeat scroll 0 0 rgba(192,192,192,0.95);
+        border: 0 none;
+        border-radius: 2px 2px 2px 2px;
+        box-shadow: -3px 3px 15px #888888;
+        color: black;
+        font: 12px Times new roman;
+        padding: 10px;
+        text-align: center;
+    }
+    </style>
+  </head>
+  <body>
+    <!-- Defining svg length and width -->
+    <svg width="900" height="450" background="blue"></svg>
+    <script>
+      const pieValue = d => d.count;
+      const colorValue = d =>
+        d.count > 50 ? d.country : 'Others';
+      const colorValue2 = d =>
+        d.count < 50 ? d.country : 'Others';
+      const colorLabel = 'Top Nations';
+      const margin = { left: 20, right: 400, top: 2, bottom: 1 };
+
+      const svg = d3.select('svg');
+      const width = svg.attr('width');
+      const height = svg.attr('height');
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const pie = d3.pie().value(pieValue);
+      const arc = d3.arc()
+        .innerRadius(innerHeight / 4)
+        .outerRadius(innerHeight / 2);
+
+      const g = svg.append('g')
+          .attr('transform', `translate(${margin.left},${margin.top})`);
+      const pieG = g.append('g')
+          .attr('transform', `translate(${innerWidth / 2},${innerHeight / 2})`);
+      const colorLegendG = g.append('g')
+          .attr('transform', `translate(${innerWidth + 50}, 130)`);
+
+      colorLegendG.append('text')
+          .attr('class', 'legend-label')
+          .attr('left', 43)
+          .attr('right', -40)
+      		.attr('y', -20)
+          .text(colorLabel);
+
+      const colorScale = d3.scaleOrdinal()
+        .range(d3.schemeCategory10);
+
+      const colorLegend = d3.legendColor()
+        .scale(colorScale)
+        .shape('square');
+
+
+			var div = d3.select("body")
+      		.append("div")
+      		.attr("class", "toolTip");
+
+
+          d3.json("data.json", function(data) {
+              var data = data.data;
+              var cols = data.cols;
+              var rows = data.rows;
+              console.log(rows);
+             // const arcs = pie(rows);
+          });
+        const arcs = pie(data);
+
+        var focus = svg.append("g")
+          .attr("class", "focus")
+          .style("display", "none");
+
+        pieG.selectAll('path')
+          .data(arcs)
+          .enter()
+          .append('path')
+          .attr('d', arc)
+          .attr('fill',
+                d => colorScale(colorValue(d.data)))
+          // Adding the interactivity to the mouse
+          //  and deploying mouse events
+      	  .on("mousemove", function(d){
+            div.style("left", d3.event.pageX-40+"px");
+            div.style("top", d3.event.pageY-5+"px");
+            div.style("display", "inline-block");
+            div.html((d.data.country)+"<br>"+(d.data.count));
+        	})
+          .on("mouseout", function(d){
+              div.style("display", "none");
+          });
+        colorLegendG.call(colorLegend)
+          .selectAll('.cell text')
+            .attr('dy', '0.2em');
+      </script><br>
+  <center>  Donut Chart  Showing number of music online piraters bought by countries</center>
+      <script src="https://d3js.org/d3.v4.min.js"></script>
+     </body>
+      </html>

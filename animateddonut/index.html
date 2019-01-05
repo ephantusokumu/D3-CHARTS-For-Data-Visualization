@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body ng-app="dChart" ng-controller="MainCtrl">
+  <donut-chart data="data"></donut-chart>
+  <script>
+var dChart = angular.module('dChart', []);
+
+dChart.controller('MainCtrl', function($scope){
+  //loading the data from the json file
+d3.json("data.json", function(data) {
+     var data = data.data;
+      console.log(data);
+});
+dChart.directive('donutChart', function(){
+  function link(scope, el, attr){
+    // loading and using d3 categorical colors & Google colors
+    var color = d3.scale.category20();
+    var width = 350;
+    var height = 400;
+    var min = Math.min(width, height);
+    var svg = d3.select(el[0]).append('svg');
+    var pie = d3.layout.pie().sort(null);
+    var arc = d3.svg.arc()
+      .outerRadius(min / 2 * 0.9)
+      .innerRadius(min / 2 * 0.5);
+
+    svg.attr({width: width, height: height});
+
+    // making the donut center
+    var g = svg.append('g')
+      .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+    // add the <path>s for each arc slice
+    var arcs = g.selectAll('path');
+
+    scope.$watch('data', function(data){
+      if(!data){ return; }
+      arcs = arcs.data(pie(data));
+      arcs.exit().remove();
+      arcs.enter().append('path')
+        .style('stroke', 'white')
+        .attr('fill', function(d, i){ return color(i) });
+      // update all the arcs
+      arcs.attr('d', arc);
+    }, true);
+  }
+  return {
+    link: link,
+    restrict: 'E',
+    scope: { data: '=' }
+  };
+});
+  </script>
+</body>
+</html>

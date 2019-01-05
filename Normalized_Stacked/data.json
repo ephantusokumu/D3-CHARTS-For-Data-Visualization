@@ -1,0 +1,6 @@
+[
+{"name":"Active", "totalHours":180, "leftHours":25},
+{"name":"Cancel", "totalHours":150, "leftHours":42},
+{"name":"Arrive", "totalHours":250, "leftHours":10},
+{"name":"Contract", "totalHours":300, "leftHours":120}
+]

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+  </style>
+</head>
+
+<body>
+  <script>
+    var width = 960,
+        height = 500;
+    var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+
+    var padding = 50;
+ 		d3.json('data.json', function(d) {
+			var data = d.data.children;
+
+      var dataScoreMax = d3.max(data,
+                           function(d){return d.data.score});
+
+      var dataCommentsMax = d3.max(data,
+                            function(d) {return d.data.num_comments})
+
+      var yScale = d3.scaleLinear()
+      .domain([0, dataScoreMax].reverse())
+      .range([0, height - padding]);
+
+      var xScale = d3.scaleLinear()
+      .domain([0, dataCommentsMax])
+      .range([0, width - padding * 2]);
+
+      var yAxis = d3.axisLeft()
+        .scale(yScale)
+        .tickSize(1)
+        .tickPadding(10);
+      var xAxis = d3.axisBottom()
+          .scale(xScale)
+          .tickSize(1)
+          .tickPadding(10);
+      //main group
+      var g = svg.append('g')
+      	.attr('transform', 'translate(50, 25)')
+
+      //apply yaxis
+      g.append('g')
+        .attr('class', 'yaxis')
+        .call(yAxis)
+      //apply xaxis
+      g.append('g')
+        .attr('transform', 'translate(0,' + (height - 50) + ')')
+        .attr('class', 'xaxis')
+        .call(xAxis)
+
+
+      var chart = g.append('g')
+
+      chart.selectAll('.circle circle')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('r', 4)
+      	.attr('cx', function(d) {
+          var scaled = xScale(d.data.num_comments);
+          return Math.floor(scaled)
+        })
+      	.attr('cy', function(d) {
+          return Math.floor(yScale(d.data.score))
+        })
+				.append('title')
+      	.text(function(d) {
+            var string = 'score: ' + d.data.score + '\ncomments: ' + d.data.num_comments;
+            return string
+          })
+    } );
+  </script>
+</body>

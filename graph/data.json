@@ -1,0 +1,89 @@
+{
+   "Kenya": [
+      {
+         "Date": 1999,
+         "Imports": "15",
+         "Exports": "22"
+      },
+      {
+         "Date": 2008,
+         "Imports": "66",
+         "Exports": "153"
+      },
+      {
+         "Date": 2007,
+         "Imports": "62",
+         "Exports": "61"
+      },
+      {
+         "Date": 2009,
+         "Imports": "126",
+         "Exports": "300"
+      },
+      {
+         "Date": 2006,
+         "Imports": "46",
+         "Exports": "150"
+      },
+      {
+         "Date": 2010,
+         "Imports": "452",
+         "Exports": "600"
+      },
+      {
+         "Date": 2005,
+         "Imports": "62",
+         "Exports": "92"
+      },
+      {
+         "Date": 2011,
+         "Imports": "420",
+         "Exports": "600"
+      },
+      {
+         "Date": 2004,
+         "Imports": "29",
+         "Exports": "61"
+      },
+      {
+         "Date": 2012,
+         "Imports": "301",
+         "Exports": "612"
+      },
+      {
+         "Date": 2003,
+         "Imports": "126",
+         "Exports": "200"
+      },
+      {
+         "Date": 2013,
+         "Imports": "530",
+         "Exports": "650"
+      },
+      {
+         "Date": 2002,
+         "Imports": "14",
+         "Exports": "40"
+      },
+      {
+         "Date": 2014,
+         "Imports": "392",
+         "Exports": "402"
+      },
+      {
+         "Date": 2001,
+         "Imports": "19",
+         "Exports": "30"
+      },
+      {
+         "Date": 2015,
+         "Imports": "120",
+         "Exports": "156"
+      },
+      {
+         "Date": 2000,
+         "Imports": "21",
+         "Exports": "21"
+      }
+   ]
+}

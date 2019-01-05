@@ -1,0 +1,7 @@
+
+[{
+    "cols": [{"label": "name", "type": "string", "value": ""},
+	       {"label": "value", "type": "number", "value": ""}],
+    "rows": [["A","-15"],["B","-20"],["C","-22"],["D","-18"],["E","2"],["F","6"],["G","26"],["H","18"]],
+    "data": [{"name": "A","value": -15},{"name": "B","value": -20},{"name": "C","value": -22},{"name": "D","value": -18},{"name":"E","value":2},{"name":"F","value":6},{"name":"G","value":26},{"name":"H","value":28}]
+}]

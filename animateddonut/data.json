@@ -1,0 +1,8 @@
+
+{
+    "cols": [{"label": "Freq", "type": "string", "value": ""},
+        {"label": "Sales", "type": "number", "value": ""}],
+    "rows": [["13"],["35"],["93"],["20"]],
+    "data": [{"Freq":"2","Sales":"10"},{"Freq":"4","Sales":"21"},{"Freq":"6","Sales":"5"},
+        {"Freq":"8","Sales":"40"},{"Freq":"10","Sales":"60"},{"Freq":"12","Sales":"55"}
+    ]}

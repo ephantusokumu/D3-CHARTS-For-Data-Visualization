@@ -1,0 +1,31 @@
+{
+"name": "UNC-CH Quick Facts Data",
+ "children": [
+	{
+  "name": "Gender",
+	 "children":[
+   {
+   "name": "Female", "size": 16827},
+		{"name":"Male", "size":12642}]},
+
+    {"name":"Age",
+     "children":
+        [{"name":"Under 25", "size":20873},
+        {"name":"25 and Over", "size":8595}]},
+
+    {"name":"Attendance",
+      "children":
+        [{"name":"Full-Time", "size":25084},
+		{"name":"Part-Time", "size":4385}]},
+
+	{"name":"Race",
+      "children":
+        [{"name":"American Indian or Alaskan Native", "size":129}]},
+		{"name":"Asian",  "size":27114},
+		{"name":"Black or African-American",  "size":3759},
+		{"name":"Hispanic",  "size":2342},
+		{"name":"Native Hawaiian or Pacific Islander",  "size":2145},
+		{"name":"Race/Ethnicity Unknown",  "size":43},
+		{"name":"Two or More Races",  "size":1184},
+		{"name":"White",  "size":18257}]
+}

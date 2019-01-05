@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "label": "apples",
+      "n": 20
+    },
+    {
+      "label": "oranges",
+      "n": 30
+    },
+    {
+      "label": "bananas",
+      "n": 10
+    },
+    {
+      "label": "plums",
+      "n": 5
+    }
+  ]
+}

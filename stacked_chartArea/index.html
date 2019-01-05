@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Homelessness graph(stackedArea)</title>
+	<script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+	<style type="text/css">
+
+		body {
+			background-color: white;
+			font-family: Helvetica, Arial, sans-serif;
+		}
+
+		h1 {
+			font-size: 24px;
+			margin: 0;
+		}
+
+		p {
+			font-size: 14px;
+			margin: 10px 0 0 0;
+		}
+
+		svg {
+			background-color: white;
+		}
+
+		circle:hover {
+			fill: orange;
+		}
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: black;
+			shape-rendering: crispEdges;
+		}
+
+		.axis text {
+			font-family: sans-serif;
+			font-size: 11px;
+		}
+		div.tooltip {
+			position: absolute;
+			text-align: center;
+			width: 120px;
+			height:71px;
+			padding: 2px;
+			font: 12px sans-serif;
+			background: lightsteelblue;
+			border: 0px;
+			border-radius: 8px;
+
+		}
+
+	</style>
+</head>
+<body>
+
+<h1>Showing homelessness in a country</h1>
+<script type="text/javascript">
+
+    //Dimensions and padding
+    var margin = {top: 20, right: 10, bottom: 50, left: 100}
+    var w = 800 - margin.left - margin.right;
+    var h = 400 - margin.top - margin.bottom;
+
+    //Set up scales for the y and x-axis
+    var x = d3.scale.ordinal()
+            .rangeRoundBands([0, w], 0.1);
+
+    var y = d3.scale.linear()
+            .range([h, 0]);
+
+    //Configure axis and the positioning
+    var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+
+
+    var stack = d3.layout.stack()
+            .offset("zero")
+            .values(function (d) {
+                return d.values;
+            })
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y(function (d) {
+                return +d.value;
+            });
+
+    var area = d3.svg.area()
+            .interpolate("cardinal")
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y0(function (d) {
+                return y(d.y0);
+            })
+            .y1(function (d) {
+                return y(d.y0 + d.y);
+            });
+
+    var color = d3.scale.category20b();
+
+    var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w + margin.left + margin.right)
+            .attr("height", h + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Define 'div' for tooltips
+    var div = d3.select("body")
+            .append("div")  // declare the tooltip div
+            .attr("class", "tooltip")              // apply the 'tooltip' class
+            .style("opacity", 0);                  // set the opacity to nil
+
+    d3.json("data.json", function (stateData) {
+        var mergedData = [];
+        var maxHomeless = 0;
+        var years = {}, states = {}, varNames = {};
+        var endStateCount = {};
+        Object.keys(stateData).forEach(function (state) {
+            //console.log(state);
+            states[state] = true;
+            Object.keys(stateData[state]).forEach(function (year) {
+                years[year] = true;
+                stateData[state][year].state = state;
+                stateData[state][year].year = year;
+                stateData[state][year].value = +stateData[state][year].total_homeless;
+                //var total_homeless = stateData[state][year].total_homeless;
+                //console.log(state+','+year+','+stateData[state][year].total_homeless);
+                Object.keys(stateData[state][year]).forEach(function (l) {
+                    varNames[l] = true;
+                })
+                mergedData.push(stateData[state][year]);
+            });
+            endStateCount[state] = stateData[state]["2014"].value;
+        });
+        console.log(endStateCount);
+        years = Object.keys(years).sort();
+        states = Object.keys(states).sort(function (a, b) {
+            console.log(endStateCount[b]);
+            return endStateCount[a] - endStateCount[b];
+        });
+        console.log(states);
+        varNames = Object.keys(varNames).sort();
+
+        var seriesArr = [], series = {};
+        states.forEach(function (state) {
+            if (state === "Total") {
+                return;
+            }
+            var values = []
+            years.forEach(function (year) {
+                values.push(stateData[state][year]);
+            })
+            series[state] = {state: state, values: values};
+            seriesArr.push(series[state]);
+        });
+
+        //console.log(seriesArr);
+
+        x.domain(years);
+
+        y.domain([0,
+            d3.max(mergedData, function (d) {
+                return +d.total_homeless;
+            })
+        ]);
+        stack(seriesArr);
+
+        svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(-40," + (h) + ")")
+                .call(xAxis);
+
+        svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+        svg.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", w)
+                .attr("y", h - 6)
+                .text("Year");
+        svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", -66)
+                .attr("x", 0)
+                .attr("dy", ".75em")
+                .attr("transform", "rotate(-90)")
+                .text("Homeless population");
+
+        var selection = svg.selectAll(".series")
+                .data(seriesArr)
+                .enter().append("g")
+                .attr("class", "series")
+                .on("mouseover", function (d) {
+
+                    console.log(d.values);
+
+                    div.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    div.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                    div.html(d.state + ": " + (stateData[d.state]["2007"].total_homeless + " (2007) - " + stateData[d.state]["2014"].total_homeless) + " (2014)")
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+
+                    var dataset = [];
+                    years.forEach(function(year) {
+                        dataset.push(stateData[d.state][year]);
+                    });
+                    var w2 = 100;
+                    var h2 = 30;
+                    var svg2 = div.append("svg")
+                            .attr("width", w2-10)
+                            .attr("height", h2+10)
+                            .append("g");
+                    console.log(years);
+                    var x2 = d3.scale.ordinal()
+                            .domain(years)
+                            .rangeRoundBands([0, w2], 0.04);
+
+                    var ymax = d3.max(dataset, function(d) {
+                        if(+d.sheltered_homeless > +d.unsheltered_homeless) {
+                            return +d.sheltered_homeless;
+                        }
+                        return +d.unsheltered_homeless;
+                    });
+                    console.log("Ymax: "+ymax);
+                    var y2 = d3.scale.linear()
+                            .domain([0, ymax])
+                            .range([h2, 0]);
+
+                    var line2 = d3.svg.line()
+                            .interpolate("basis")
+                            .x(function(d) { console.log(d.year); return x2(d.year); })
+                            .y(function(d) { console.log(d.unsheltered_homeless); return 5+y2(d.unsheltered_homeless)});
+
+                    var line3 = d3.svg.line()
+                            .interpolate("basis")
+                            .x(function(d) { return x2(d.year); })
+                            .y(function(d) { return 5+y2(d.sheltered_homeless)});
+
+                    svg2.append("path")
+                            .attr("d", line2(dataset))
+                            .attr("class", "linePath")
+                            .attr("fill", "none")
+                            .attr("stroke", "#FF0000")
+                            .attr("stroke-width", 1);
+
+                    svg2.append("path")
+                            .attr("d", line3(dataset))
+                            .attr("class", "linePath")
+                            .attr("fill", "none")
+                            .attr("stroke", "#0000FF")
+                            .attr("stroke-width", 1);
+                    console.log("appended.")
+                });
+
+        selection.append("path")
+                .attr("class", "stackedArea")
+                .attr("d", function (d) {
+                    return area(d.values);
+                })
+                .style("fill", function (d) {
+                    return color(d.state);
+                })
+                .style("stroke", "grey");
+
+
+
+    });
+
+</script><br>
+<script src="http://d3js.org/d3.v3.js"></script> </body>
+</html>

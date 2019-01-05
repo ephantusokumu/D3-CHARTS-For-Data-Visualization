@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  path.line {
+    fill: none;
+    stroke-width: 1px;
+    pointer-events: none;
+  }
+
+  .zoomOut {
+    fill: #66a;
+    cursor: pointer;
+  }
+
+  .zoomOutText {
+    pointer-events: none;
+    fill: #ccc;
+  }
+
+  .zoomOverlay {
+    pointer-events: all;
+    fill: none;
+  }
+
+  .band {
+    fill: none;
+    stroke-width: 2px;
+    stroke: black;
+  }
+
+</style>
+
+<body>
+  <button onClick="zoomOut()"> Zoom Out </button>
+  <button onClick="pullData()"> Zoom In </button>
+  <div id="graph"></div>
+  </button>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+    var data = [[{"x":0,"y":154.50225795359734},{"x":5,"y":-431.1182941299825},{"x":10,"y":-263.54297944962224},{"x":15,"y":20.79694446514884},{"x":20,"y":-87.760719133787},{"x":25,"y":345.3894549301824},{"x":30,"y":-290.35883897319945},{"x":35,"y":-280.91337075367437},{"x":40,"y":-225.94356313607113},{"x":45,"y":-251.16322653616896},{"x":50,"y":497.35765151981343},{"x":55,"y":-418.9842890223636},{"x":60,"y":-10.514169311464514},{"x":65,"y":-142.42525955529152},{"x":70,"y":-271.1309836942313},{"x":75,"y":-299.39379176396153},{"x":80,"y":258.6465842514907},{"x":85,"y":-278.542553549006},{"x":90,"y":-281.1272168974168},{"x":95,"y":286.4967168240822},{"x":100,"y":313.0808307829635}]]
+    var bandPos = [-1, -1];
+    var pos;
+    var colors = d3.scaleOrdinal(d3.schemeCategory10);
+
+    //initialized when data is pulled
+    var x, y, xDomain, yDomain, xDomainMin, yDomainMin, xAxis, yAxis, zoomArea, line;
+    xDomain = 0;
+    yDomain = 0;
+    xDomainMin = 0;
+    yDomainMin = 0;
+
+    var margin = {
+      top: 40,
+      right: 40,
+      bottom: 50,
+      left: 60
+    }
+    var width = 900 - margin.left - margin.right;
+    var height = 450 - margin.top - margin.bottom;
+    var drag = d3.drag();
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    svg.append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
+      .attr("width", width)
+      .attr("height", height);
+
+    var zoomOverlay = svg.append("rect")
+      .attr("width", width - 10)
+      .attr("height", height)
+      .attr("class", "zoomOverlay")
+      .call(drag);
+
+
+    var band = svg.append("rect")
+      .attr("width", 0)
+      .attr("height", 0)
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("class", "band");
+
+    var zoomout = svg.append("g");
+
+    drag.on("end", function() {
+      var pos = d3.mouse(this);
+      var x1 = x.invert(bandPos[0]);
+      var x2 = x.invert(pos[0]);
+
+      if (x1 < x2) {
+        zoomArea.x1 = x1;
+        zoomArea.x2 = x2;
+      } else {
+        zoomArea.x1 = x2;
+        zoomArea.x2 = x1;
+      }
+
+      var y1 = y.invert(pos[1]);
+      var y2 = y.invert(bandPos[1]);
+
+      if (x1 < x2) {
+        zoomArea.y1 = y1;
+        zoomArea.y2 = y2;
+      } else {
+        zoomArea.y1 = y2;
+        zoomArea.y2 = y1;
+      }
+
+      bandPos = [-1, -1];
+
+      d3.select(".band").transition()
+        .attr("width", 0)
+        .attr("height", 0)
+        .attr("x", bandPos[0])
+        .attr("y", bandPos[1]);
+
+      zoom();
+
+    });
+
+    drag.on("drag", function() {
+
+      var pos = d3.mouse(this);
+
+      if (pos[0] < bandPos[0]) {
+        d3.select(".band").
+        attr("transform", "translate(" + (pos[0]) + "," + bandPos[1] + ")");
+      }
+      if (pos[1] < bandPos[1]) {
+        d3.select(".band").
+        attr("transform", "translate(" + (pos[0]) + "," + pos[1] + ")");
+      }
+      if (pos[1] < bandPos[1] && pos[0] > bandPos[0]) {
+        d3.select(".band").
+        attr("transform", "translate(" + (bandPos[0]) + "," + pos[1] + ")");
+      }
+
+      //set new position of band when user initializes drag
+      if (bandPos[0] == -1) {
+        bandPos = pos;
+        d3.select(".band").attr("transform", "translate(" + bandPos[0] + "," + bandPos[1] + ")");
+      }
+
+      d3.select(".band").transition().duration(1)
+        .attr("width", Math.abs(bandPos[0] - pos[0]))
+        .attr("height", Math.abs(bandPos[1] - pos[1]));
+    });
+
+    function zoom() {
+      //recalculate domains
+      if (zoomArea.x1 > zoomArea.x2) {
+        x.domain([zoomArea.x2, zoomArea.x1]);
+      } else {
+        x.domain([zoomArea.x1, zoomArea.x2]);
+      }
+
+      if (zoomArea.y1 > zoomArea.y2) {
+        y.domain([zoomArea.y2, zoomArea.y1]);
+      } else {
+        y.domain([zoomArea.y1, zoomArea.y2]);
+      }
+
+      //update axis and redraw lines
+      var t = svg.transition().duration(750);
+      t.select(".x.axis").call(xAxis);
+      t.select(".y.axis").call(yAxis);
+      t.selectAll(".line").attr("d", line);
+
+    }
+
+    function pullData() {
+      var input;
+      var data = [];
+      xDomain = 0;
+      yDomain = 0;
+      yDomainMin = 0;
+      xDomainMin = 0;
+
+      d3.json("data.json", function(res) {
+        input = res
+        if (Array.isArray(input)) {
+          updateChart(input);
+        }
+      });
+    }
+
+    function updateChart(data) {
+      var xmax, ymax, xmin, ymin;
+
+      d3.selectAll('.line').remove();
+      d3.selectAll(".axis").remove();
+
+      data.forEach((da, idx) => {
+        xmax = da.map(d => d.x).reduce((a, c) => Math.max(a, c))
+        ymax = da.map(d => d.y).reduce((a, c) => Math.max(a, c))
+
+        xmin = da.map(d => d.x).reduce((a, c) => Math.min(a, c))
+        ymin = da.map(d => d.y).reduce((a, c) => Math.min(a, c))
+
+        xDomain = Math.max(xDomain, xmax);
+        yDomain = Math.max(yDomain, ymax);
+        xDomainMin = Math.min(xDomainMin, xmin);
+        yDomainMin = Math.min(yDomainMin, ymin);
+      })
+      xDomain += xDomain * .10;
+      yDomain += yDomain * .10;
+      xDomainMin += xDomainMin * .10;
+      yDomainMin += yDomainMin * .10;
+
+
+      line = d3.line()
+        .x(function(d) {
+          return x(d.x);
+        })
+        .y(function(d) {
+          return y(d.y);
+        });
+
+      zoomArea = {
+        x1: xDomainMin,
+        y1: yDomainMin,
+        x2: xDomain,
+        y2: yDomain
+      };
+
+      x = d3.scaleLinear().range([0, width]).domain([xDomainMin, xDomain]);
+      y = d3.scaleLinear().range([height, 0]).domain([yDomainMin, yDomain]);
+
+      xAxis = d3.axisBottom(x)
+      yAxis = d3.axisLeft(y)
+
+      //UPDATE AXES
+      svg.append("g")
+        .attr("class", "x axis")
+        .call(xAxis)
+        .attr("transform", "translate(0," + height + ")");
+
+      svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+
+      data.forEach((da, idx) => {
+        svg.append("path")
+          .datum(da)
+          .attr("class", "line line" + idx)
+          .attr("clip-path", "url(#clip)")
+          .style("stroke", colors(idx))
+          .attr("d", line);
+      })
+
+      d3.select(".band").raise();
+
+      zoom();
+    }
+
+    var zoomOut = function() {
+      x.domain([xDomainMin, xDomain]);
+      y.domain([yDomainMin, yDomain]);
+
+      var t = svg.transition().duration(750);
+      t.select(".x.axis").call(xAxis);
+      t.select(".y.axis").call(yAxis);
+
+      t.selectAll(".line").attr("d", line);
+    }
+    updateChart(data);
+  </script>
+</body>
+</html>
